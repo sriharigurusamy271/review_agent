@@ -10,24 +10,37 @@ PR_NUMBER = os.getenv("PR_NUMBER")
 client = genai.Client(api_key=API_KEY)
 
 def analyze_code(diff_text):
-    prompt = """You are an automated code reviewer.
+    prompt = """You are a senior software engineer acting as a code reviewer.
 
-    Analyze the following GitHub pull request diff.
+        Review the following GitHub Pull Request diff as if it will be merged into a
+        production codebase maintained long-term by multiple teams.
 
-    Focus on identifying:
-    - Potential bugs or logical errors
-    - Security or safety concerns
-    - Performance or optimization opportunities
-    - Code quality or maintainability issues
+        Your goal is to identify issues that could:
+        - Cause bugs or incorrect behavior now or in the future
+        - Introduce security, reliability, or data integrity risks
+        - Create performance bottlenecks or scalability problems
+        - Reduce code readability, testability, or maintainability over time
+        - Violate best practices or architectural principles
 
-    Guidelines:
-    - Be concise and actionable
-    - Reference file names and line numbers where possible
-    - Do NOT repeat the diff
-    - Do NOT suggest changes unrelated to the diff
-    - If no issues are found, explicitly say so
+        Review guidelines:
+        - Think defensively and assume this code will evolve
+        - Call out edge cases, failure scenarios, and hidden assumptions
+        - Suggest improvements only when they provide clear value
+        - Prefer simple, robust solutions over clever ones
+        - Avoid stylistic nitpicks unless they impact clarity or safety
 
-    Provide the feedback in clear bullet points grouped by category."""
+        Response format:
+        - Group feedback under clear headings (e.g., Bugs, Security, Performance, Maintainability)
+        - Use concise, actionable bullet points
+        - Reference file names and line numbers where applicable
+        - Do NOT repeat or summarize the diff
+        - Do NOT suggest changes unrelated to the diff
+        - If no issues are found, explicitly state that the changes look solid and production-ready
+
+        Audience:
+        - Assume the feedback will be read by senior engineers, tech leads, or engineering managers.
+        - Be precise, professional, and focused on long-term impact.
+        """
 
     try:
         response = client.models.generate_content(
