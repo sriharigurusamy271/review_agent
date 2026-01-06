@@ -12,34 +12,36 @@ client = genai.Client(api_key=API_KEY)
 def analyze_code(diff_text):
     prompt = """You are a senior software engineer acting as a code reviewer.
 
-        Review the following GitHub Pull Request diff as if it will be merged into a
-        production codebase maintained long-term by multiple teams.
+            Review the following GitHub Pull Request diff as if it will be merged into a
+            long-term, production codebase maintained by multiple teams.
 
-        Your goal is to identify issues that could:
-        - Cause bugs or incorrect behavior now or in the future
-        - Introduce security, reliability, or data integrity risks
-        - Create performance bottlenecks or scalability problems
-        - Reduce code readability, testability, or maintainability over time
-        - Violate best practices or architectural principles
+            Your goal is to identify issues that could:
+            - Cause bugs or incorrect behavior
+            - Introduce security or reliability risks
+            - Impact performance or scalability
+            - Reduce readability or maintainability over time
 
-        Review guidelines:
-        - Think defensively and assume this code will evolve
-        - Call out edge cases, failure scenarios, and hidden assumptions
-        - Suggest improvements only when they provide clear value
-        - Prefer simple, robust solutions over clever ones
-        - Avoid stylistic nitpicks unless they impact clarity or safety
+            Review guidelines:
+            - Focus only on meaningful, high-signal issues
+            - Prefer practical, defensive improvements
+            - Avoid stylistic nitpicks unless they affect clarity or safety
+            - Do not speculate beyond what is visible in the diff
 
-        Response format:
-        - Group feedback under clear headings (e.g., Bugs, Security, Performance, Maintainability)
-        - Use concise, actionable bullet points
-        - Reference file names and line numbers where applicable
-        - Do NOT repeat or summarize the diff
-        - Do NOT suggest changes unrelated to the diff
-        - If no issues are found, explicitly state that the changes look solid and production-ready
+            Response format (STRICT):
+            - Group feedback under clear headings (e.g., Bug, Security, Maintainability)
+            - Each finding MUST be at most **2 short lines**
+            - First line: describe the issue
+            - Second line: give a concrete improvement or recommendation
+            - Reference file names and line numbers where applicable
+            - Use concise bullet points only
+            - Do NOT repeat or summarize the diff
+            - Do NOT include long explanations or justification paragraphs
+            - If no issues are found, state: “No significant issues found; changes look production-ready.”
 
-        Audience:
-        - Assume the feedback will be read by senior engineers, tech leads, or engineering managers.
-        - Be precise, professional, and focused on long-term impact.
+            Audience:
+            - Senior engineers and tech leads
+            - Keep feedback precise, direct, and easy to scan
+
         """
 
     try:
