@@ -1,6 +1,6 @@
 def calculate(a, b):
-    return a / b
-
+    ans = a / b
+    return ans
 
 def main():
     result = calculate(100, 5)
